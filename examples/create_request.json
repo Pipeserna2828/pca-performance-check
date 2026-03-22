@@ -1,0 +1,14 @@
+{
+  "system_name": "Credinet Credit API",
+  "component_type": "API",
+  "service_criticality": "CRITICAL",
+  "change_type": "BACKEND",
+  "expected_demand_value": 120,
+  "expected_demand_unit": "CONCURRENT_USERS",
+  "target_p95_ms": 500,
+  "stable_environment_available": true,
+  "observability_available": true,
+  "baseline_available": false,
+  "external_dependencies": true,
+  "change_description": "Se actualiza la lógica de aprobación de crédito y la integración con servicio de scoring externo."
+}
