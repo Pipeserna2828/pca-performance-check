@@ -1,177 +1,233 @@
 # PCA Performance Check
 
-**Evaluación de alistamiento y priorización para pruebas de performance**
+## Descripción general
+**PCA Performance Check** es un MVP orientado al área de performance que permite evaluar el alistamiento de una solicitud antes de ejecutar pruebas de rendimiento.
 
-PCA Performance Check es un MVP de plataforma interna para el área de performance. Su objetivo es recibir una solicitud de análisis, evaluar si la solicitud está lista para entrar al flujo de performance y devolver un resultado estructurado con score, riesgos, decisión, recomendación de tipo de prueba y una explicación entendible para el usuario.
+La solución recibe una solicitud con información mínima del sistema y del cambio, aplica reglas determinísticas de performance, calcula un **readiness score**, clasifica el **nivel de riesgo**, define una **decisión de alistamiento** y recomienda el **tipo de prueba** más conveniente.
 
-El producto usa dos capas claramente separadas:
+Adicionalmente, incorpora una capa de explicación asistida con **Microsoft Foundry / Azure OpenAI** para traducir el resultado técnico a un lenguaje más claro y accionable para el usuario.
 
-- **Motor determinístico**: calcula score, riesgos, estado final y recomendación de prueba.
-- **Asistente de Resultados**: usa IA solo para explicar el resultado en lenguaje claro. Si la IA no está disponible, el sistema responde con una explicación local controlada.
+---
 
-## 1. Objetivo del MVP
+## Objetivo
+Estandarizar el análisis inicial de solicitudes de performance, reduciendo validaciones manuales repetitivas y mejorando la priorización técnica antes de invertir esfuerzo en ejecución de pruebas.
 
-Este MVP responde al reto de construir una mini plataforma de Quality Engineering con:
+---
 
-- un **núcleo común** reutilizable;
-- un **módulo especializado de performance**;
-- una **API en Python**;
-- un **resultado estándar**;
-- y una base clara para evolucionar a una capacidad interna de plataforma.
+## Alcance funcional del MVP
+La solución permite:
 
-## 2. Alcance funcional
+- Registrar una solicitud de análisis de performance.
+- Evaluar el nivel de alistamiento de la solicitud.
+- Identificar brechas técnicas y riesgos relevantes.
+- Recomendar el tipo de prueba más adecuado.
+- Generar una explicación del resultado mediante IA o fallback local.
+- Visualizar el resultado en una interfaz sencilla y enfocada en demostración.
 
-### Núcleo común
+---
 
-El núcleo común permite:
+## Capacidades principales
 
-- registrar una solicitud de análisis;
-- ejecutar el análisis;
-- consultar la solicitud registrada;
-- consultar el resultado estructurado.
+### 1. Motor determinístico
+El motor central aplica reglas de negocio para calcular:
 
-### Módulo especializado
+- **Readiness score** (0 a 100)
+- **Decisión de alistamiento**
+  - `NO LISTA`
+  - `LISTA CON BRECHAS`
+  - `LISTA`
+- **Nivel de riesgo**
+  - `BAJO`
+  - `MEDIO`
+  - `ALTO`
+- **Necesidad de pruebas de performance**
+- **Tipo de prueba recomendado**
+  - `LÍNEA BASE`
+  - `CARGA`
+  - `ESTRÉS`
+  - `PICO`
+  - `RESISTENCIA`
 
-El módulo especializado de performance evalúa:
+### 2. Explicación asistida
+La solución puede consumir **Microsoft Foundry / Azure OpenAI** para generar:
 
-- alistamiento de la solicitud;
-- prerequisitos mínimos;
-- criticidad y riesgo;
-- necesidad de pruebas de performance;
-- tipo de prueba recomendado (`Baseline`, `Load` o `Stress`).
+- resumen ejecutivo,
+- explicación de la decisión,
+- siguientes pasos sugeridos.
 
-### Capa IA
+Si el servicio de IA no está disponible, la aplicación responde mediante un **fallback local** para no interrumpir el flujo.
 
-La IA **no decide**. La IA solo:
+### 3. Interfaz de usuario
+El frontend está construido en **Streamlit** y permite:
 
-- resume el resultado;
-- explica la decisión;
-- propone siguientes pasos.
+- diligenciar la solicitud,
+- ejecutar el análisis,
+- visualizar resultados técnicos,
+- consultar el resumen generado por IA.
 
-## 3. Arquitectura resumida
+---
 
-La solución está separada en dos aplicaciones:
+## Arquitectura de la solución
 
-- **Backend**: FastAPI + motor determinístico + integración con Azure OpenAI desplegado en Microsoft Foundry.
-- **Frontend**: Streamlit con branding de Sistecrédito para la demo funcional.
+### Backend
+Construido en **FastAPI**, siguiendo una separación por capas:
 
-## 4. Estructura del proyecto
+- `core`: entidades, enums y reglas de negocio
+- `application`: casos de uso, orquestación e interfaces
+- `infrastructure`: persistencia, configuración e integración IA
+- `initialization`: composición de dependencias y rutas API
+
+### Frontend
+Construido en **Streamlit**, orientado a una experiencia simple, clara y fácil de sustentar.
+
+### Persistencia
+Actualmente se usa un almacenamiento **JSON local** con fines de demostración.
+
+### Integración IA
+Se utiliza **Microsoft Foundry / Azure OpenAI** como proveedor de explicación asistida.
+
+---
+
+## Estructura principal del proyecto
 
 ```text
 pca-performance-check/
-├── docs/
-├── examples/
 ├── frontend/
 ├── src/
+│   ├── application/
+│   ├── core/
+│   ├── infrastructure/
+│   └── initialization/
 ├── tests/
-├── .env.example
-├── Dockerfile
+├── data/
+├── scripts/
+├── requirements.txt
+├── requirements-dev.txt
 ├── pyproject.toml
 └── README.md
 ```
 
-## 5. Requisitos
+---
 
-- Python 3.11, 3.12 o 3.13
-- Acceso a Microsoft Foundry / Azure OpenAI (opcional para la demo local; hay fallback)
+## Requisitos
+- Python 3.11 o superior
+- Git
+- Acceso a Microsoft Foundry / Azure OpenAI si se quiere usar explicación asistida real
 
-## 6. Instalación
+---
 
-```bash
+## Instalación
+
+### 1. Crear entorno virtual
+En Windows PowerShell:
+
+```powershell
 python -m venv .venv
-source .venv/bin/activate  # Linux / macOS
-# .venv\Scripts\activate  # Windows
+.venv\Scripts\Activate.ps1
+```
+
+### 2. Instalar dependencias
+```powershell
 pip install -r requirements-dev.txt
 ```
 
-Si prefieres instalar el proyecto como paquete editable:
+### 3. Configurar variables de entorno
+Crear un archivo `.env` en la raíz del proyecto con la configuración requerida.
 
-```bash
-pip install -e .
+Ejemplo:
+
+```env
+APP_NAME=PCA Performance Check
+API_VERSION=1.0.0
+API_PREFIX=/api/v1
+DATA_STORE_PATH=data/analysis_requests.json
+DEBUG=false
+
+AI_ENABLED=true
+AI_PROVIDER=azure_openai
+
+AZURE_OPENAI_ENDPOINT=https://agente-pruebas-resource.cognitiveservices.azure.com/
+AZURE_OPENAI_API_KEY=REEMPLAZAR_CON_LA_CLAVE_REAL
+AZURE_OPENAI_DEPLOYMENT=gpt-5-nano
+AZURE_OPENAI_API_VERSION=v1
+
+BACKEND_BASE_URL=http://localhost:8000
 ```
 
-## 7. Configuración
+> Importante: no subir `.env` al repositorio.
 
-1. Copia `.env.example` a `.env`.
-2. Reemplaza la API key real.
-3. Ajusta `AI_ENABLED=true` si quieres usar Foundry.
-4. Si aún no tienes la key lista, puedes dejar `AI_ENABLED=false` y el sistema funcionará con el fallback local.
+---
 
-## 8. Ejecución del backend
+## Ejecución
 
-```bash
+### Levantar backend
+```powershell
 uvicorn src.main:app --reload --port 8000
 ```
 
-Documentación Swagger:
-
-- `http://localhost:8000/docs`
-
-## 9. Ejecución del frontend
-
+### Levantar frontend
 En otra terminal:
 
-```bash
+```powershell
 streamlit run frontend/streamlit_app.py
 ```
 
-## 10. Flujo recomendado de demo
+---
 
-1. Crear la solicitud desde Streamlit.
-2. Ejecutar el análisis.
-3. Revisar el resultado técnico.
-4. Revisar el texto generado por el **Asistente de Resultados**.
-
-## 11. Endpoints principales
-
+## Endpoints principales
 - `POST /api/v1/analysis-requests`
 - `POST /api/v1/analysis-requests/{request_id}/execute`
 - `GET /api/v1/analysis-requests/{request_id}`
 - `GET /api/v1/analysis-requests/{request_id}/result`
 - `GET /health`
 
-## 12. Reglas principales del motor determinístico
+Swagger:
+- `http://localhost:8000/docs`
 
-### Readiness score (0 a 100)
+---
 
-- demanda esperada definida: 20
-- objetivo p95 definido: 15
-- ambiente estable disponible: 20
-- observabilidad disponible: 15
-- baseline previo disponible: 10
-- dependencias externas identificadas: 10
-- descripción del cambio clara: 10
+## Validación de Foundry / Azure OpenAI
+La solución está preparada para usar Microsoft Foundry.  
+Para validar la conexión de forma directa, puede ejecutarse un script de prueba interna.
 
-### Estados finales
+El comportamiento esperado es:
 
-- `NOT_READY`
-- `GO_WITH_GAPS`
-- `READY`
+- si la IA responde correctamente, el campo `source` será `azure_openai`,
+- si la integración falla, el sistema responderá con `fallback_template`.
 
-### Recomendación de prueba
+En la interfaz también se muestra una nota discreta indicando la fuente de explicación usada.
 
-- `Baseline`
-- `Load`
-- `Stress`
+---
 
-## 13. Pruebas automatizadas
+## Pruebas
+Para ejecutar pruebas automatizadas:
 
-```bash
+```powershell
 pytest
 ```
 
-## 14. Consideraciones para la sustentación
+Estado esperado del proyecto:
+- pruebas unitarias y de flujo base aprobadas.
 
-- El diseño es modular y extensible.
-- El núcleo común puede reutilizarse por otros módulos de calidad.
-- La IA está acotada a explicación y acompañamiento, no a decisiones críticas.
-- El despliegue en Azure está documentado en `docs/architecture/azure-deployment.md`.
+---
 
-## 15. Próximas mejoras
+## Consideraciones de diseño
+- La lógica crítica de decisión **no depende de IA**.
+- La IA se usa únicamente para **explicar** el resultado.
+- El almacenamiento actual es local y está orientado a MVP.
+- La solución está preparada para evolucionar a una arquitectura más empresarial en Azure.
 
-- persistencia en base de datos;
-- autenticación corporativa;
-- dashboard histórico;
-- despliegue completo en Azure;
-- parametrización dinámica de reglas;
-- analítica histórica de performance.
+---
+
+## Próximos pasos recomendados
+- Reemplazar persistencia JSON por una base de datos administrada.
+- Incorporar autenticación y control de acceso.
+- Externalizar reglas de negocio a configuración administrable.
+- Agregar trazabilidad y observabilidad técnica.
+- Fortalecer validaciones y pruebas de integración.
+- Preparar despliegue productivo en Azure App Service o Container Apps.
+
+---
+
+## Autor
+Proyecto preparado como solución técnica para el reto PCA, con enfoque en buenas prácticas, claridad arquitectónica y usabilidad para sustentación.
