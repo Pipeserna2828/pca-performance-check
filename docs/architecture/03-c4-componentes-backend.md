@@ -47,41 +47,41 @@ flowchart TB
     getResUC --> repo
 ```
 
-## Explicación de los componentes
+## Explicación de componentes
 
 ### Rutas API
-Reciben la solicitud HTTP y delegan a casos de uso específicos.
+Reciben la solicitud HTTP y delegan el trabajo a los casos de uso.
 
 ### Casos de uso
 Cada endpoint tiene una responsabilidad clara:
-- crear solicitud,
-- ejecutar análisis,
-- consultar solicitud,
-- consultar resultado.
+- crear solicitud
+- ejecutar análisis
+- consultar solicitud
+- consultar resultado
 
 ### RequestIdGenerator
 Genera el identificador funcional de cada solicitud.
 
 ### AnalysisOrchestrator
-Coordina el flujo completo de ejecución:
-1. recupera la solicitud,
-2. llama al motor determinístico,
-3. arma el payload para la explicación,
-4. invoca al explicador,
-5. persiste el resultado.
+Coordina el flujo de ejecución:
+1. recupera la solicitud
+2. ejecuta el motor determinístico
+3. arma el payload para la explicación
+4. solicita la explicación
+5. persiste el resultado
 
 ### PerformanceReadinessRules
-Contiene el conocimiento del dominio del MVP:
-- score,
-- brechas,
-- riesgos,
-- decisión,
-- prueba recomendada.
+Contiene la lógica central del proyecto:
+- score
+- brechas
+- riesgos
+- decisión
+- prueba recomendada
 
 ### ResilientResultExplainer
-Aísla la aplicación de fallos del proveedor IA:
-- usa Azure OpenAI si está disponible,
-- usa fallback templado si falla o no está configurado.
+Decide qué camino usar:
+- **AzureOpenAIResultExplainer** si Foundry está disponible
+- **TemplatedResultExplainer** si Foundry falla o no está configurado
 
 ### JsonAnalysisRepository
-Abstrae el acceso a la persistencia local.
+Abstrae el acceso al almacenamiento local del MVP.

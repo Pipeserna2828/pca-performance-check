@@ -2,18 +2,18 @@
 
 ## Propósito
 
-Mostrar los contenedores que componen la solución y la responsabilidad de cada uno.
+Mostrar los contenedores principales de la solución y la responsabilidad de cada uno.
 
 ```mermaid
 flowchart LR
-    actor["Usuario interno / Analista PCA"]
+    actor["Usuario / Analista PCA"]
 
     subgraph ui["Experiencia de usuario"]
         fe["Frontend Streamlit<br/>Interfaz y visualización"]
     end
 
     subgraph app["Aplicación PCA Performance Check"]
-        api["Backend FastAPI<br/>API REST y composición"]
+        api["Backend FastAPI<br/>API REST y orquestación"]
         repo["Repositorio JSON local<br/>Persistencia del MVP"]
     end
 
@@ -25,31 +25,32 @@ flowchart LR
     api -->|"Solicita resumen y explicación"| ai
 ```
 
-## Contenedores identificados
+## Contenedores
 
 ### Frontend Streamlit
 Responsable de:
-- capturar la solicitud,
-- enviar la información al backend,
-- mostrar métricas, brechas, riesgos y explicación.
+- capturar la solicitud
+- ejecutar el flujo de demo
+- mostrar score, decisión, riesgo y explicación
 
 ### Backend FastAPI
 Responsable de:
-- validar el contrato de entrada,
-- exponer endpoints,
-- ejecutar el motor determinístico,
-- coordinar repositorio y explicador.
+- exponer endpoints
+- validar la solicitud
+- ejecutar el motor determinístico
+- coordinar persistencia y explicación
 
 ### Repositorio JSON local
 Responsable de:
-- persistir solicitudes,
-- persistir resultados,
-- soportar la demo del MVP.
+- guardar solicitudes
+- guardar resultados
+- soportar el MVP local
 
 ### Microsoft Foundry / Azure OpenAI
 Responsable de:
-- convertir el resultado técnico en texto claro para el usuario final.
+- transformar el resultado técnico en una explicación clara
 
-## Observación importante
+## Qué no muestra este diagrama
 
-En este nivel todavía **no** se muestran clases, casos de uso ni componentes internos.
+No muestra casos de uso, clases ni servicios internos del backend.  
+Eso pertenece al nivel de **Componentes**.

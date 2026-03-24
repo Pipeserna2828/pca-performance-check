@@ -1,12 +1,12 @@
-# C4 – Contexto del sistema
+# C4 – Contexto
 
 ## Propósito
 
-Mostrar cómo **PCA Performance Check** se relaciona con sus actores y con los sistemas externos relevantes.
+Mostrar cómo **PCA Performance Check** se relaciona con sus actores y sistemas externos.
 
 ```mermaid
 flowchart LR
-    usuario["Usuario interno / Analista PCA"]
+    usuario["Usuario / Analista PCA"]
     frontend["Frontend Streamlit<br/>PCA Performance Check"]
     backend["Backend FastAPI<br/>PCA Performance Check"]
     foundry["Microsoft Foundry / Azure OpenAI"]
@@ -18,13 +18,14 @@ flowchart LR
     backend -->|"Guarda solicitudes y resultados"| jsonrepo
 ```
 
-## Lectura del diagrama
+## Lectura
 
 - El **usuario** interactúa con el **frontend Streamlit**.
-- El **frontend** consume la **API FastAPI** para registrar solicitudes, ejecutar análisis y consultar resultados.
-- El **backend** usa **Microsoft Foundry / Azure OpenAI** únicamente para explicar el resultado técnico.
-- El **backend** persiste solicitudes y resultados en un **archivo JSON local**, propio del MVP actual.
+- El **frontend** consume la **API FastAPI**.
+- El **backend** usa **Foundry** solo para explicar el resultado.
+- El **backend** persiste solicitudes y resultados en un **JSON local** del MVP.
 
-## Observación importante
+## Qué no muestra este diagrama
 
-Este diagrama muestra **relaciones de contexto**, no componentes internos del backend.
+No muestra clases ni componentes internos del backend.  
+Solo muestra el sistema en relación con actores y dependencias externas.
