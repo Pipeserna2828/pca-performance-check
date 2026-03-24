@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Mostrar cómo **PCA Performance Check** se relaciona con sus actores y sistemas externos.
+Mostrar cómo PCA Performance Check se relaciona con sus actores y sistemas externos.
 
 ```mermaid
 flowchart LR
@@ -23,7 +23,7 @@ flowchart LR
 - El **usuario** interactúa con el **frontend Streamlit**.
 - El **frontend** consume la **API FastAPI**.
 - El **backend** usa **Foundry** solo para explicar el resultado.
-- El **backend** persiste solicitudes y resultados en un **JSON local** del MVP.
+- El **backend** persiste solicitudes y resultados en un **JSON local**, propio del MVP actual.
 
 ## Qué no muestra este diagrama
 

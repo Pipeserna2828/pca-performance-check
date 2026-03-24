@@ -30,7 +30,7 @@ flowchart LR
 ### Frontend Streamlit
 Responsable de:
 - capturar la solicitud
-- ejecutar el flujo de demo
+- ejecutar el flujo de análisis
 - mostrar score, decisión, riesgo y explicación
 
 ### Backend FastAPI
@@ -53,4 +53,4 @@ Responsable de:
 ## Qué no muestra este diagrama
 
 No muestra casos de uso, clases ni servicios internos del backend.  
-Eso pertenece al nivel de **Componentes**.
+Eso pertenece al nivel de componentes.

@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Explicar de forma simple cómo está compuesto PCA Performance Check y qué responsabilidad tiene cada parte.
+Explicar de forma simple cómo está compuesto PCA Performance Check y cuál es la responsabilidad de cada parte.
 
 ```mermaid
 flowchart LR
@@ -10,7 +10,7 @@ flowchart LR
     frontend["Frontend Streamlit"]
     backend["Backend FastAPI"]
     orq["AnalysisOrchestrator"]
-    reglas["Motor determinístico<br/>PerformanceReadinessRules"]
+    reglas["PerformanceReadinessRules"]
     explicador["ResilientResultExplainer"]
     foundry["Microsoft Foundry / Azure OpenAI"]
     fallback["TemplatedResultExplainer"]
@@ -30,10 +30,10 @@ flowchart LR
 
 ### Frontend Streamlit
 Es la interfaz del usuario.  
-Permite diligenciar la solicitud y mostrar el resultado del análisis.
+Permite diligenciar la solicitud y visualizar el resultado técnico y la explicación final.
 
 ### Backend FastAPI
-Recibe la solicitud, coordina la ejecución del análisis y devuelve el resultado estructurado.
+Recibe la solicitud, coordina la ejecución del análisis y expone los endpoints consumidos por el frontend.
 
 ### AnalysisOrchestrator
 Coordina el flujo completo:
@@ -42,27 +42,26 @@ Coordina el flujo completo:
 - pide la explicación
 - guarda el resultado
 
-### Motor determinístico
-Es la parte central del sistema.  
+### PerformanceReadinessRules
+Es el motor determinístico del sistema.  
 Calcula:
-
 - readiness score
 - decisión
 - riesgo
 - tipo de prueba recomendado
-- brechas
+- prerequisitos faltantes
 - hallazgos de riesgo
 
 ### ResilientResultExplainer
 Decide qué explicador usar:
 - Azure OpenAI si Foundry está disponible
-- fallback local si no está disponible o falla
+- fallback local si Foundry falla o no está configurado
 
 ### Microsoft Foundry / Azure OpenAI
-Se usa cuando está disponible para generar la explicación asistida.
+Se usa únicamente para generar una explicación clara del resultado técnico.
 
 ### TemplatedResultExplainer
-Genera una explicación local controlada cuando Foundry no se puede usar.
+Genera una explicación local controlada cuando no se puede usar Foundry.
 
 ### JsonAnalysisRepository
 Guarda solicitudes y resultados del MVP.
